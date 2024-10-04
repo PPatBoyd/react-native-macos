@@ -41,14 +41,13 @@ if (NativeAppearance) {
   nativeEventEmitter.addListener(
     'appearanceChanged',
     (newAppearance: AppearancePreferences) => {
-      const {colorScheme} = newAppearance;
       invariant(
-        colorScheme === 'dark' ||
-          colorScheme === 'light' ||
-          colorScheme == null,
+        newAppearance.colorScheme === 'dark' ||
+		newAppearance.colorScheme === 'light' ||
+		newAppearance.colorScheme == null,
         "Unrecognized color scheme. Did you mean 'dark' or 'light'?",
       );
-      eventEmitter.emit('change', {colorScheme});
+      eventEmitter.emit('change', newAppearance);
     },
   );
 }

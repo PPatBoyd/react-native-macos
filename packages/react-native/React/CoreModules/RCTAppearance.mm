@@ -90,6 +90,9 @@ NSString *RCTColorSchemePreference(NSAppearance *appearance)
 
 @implementation RCTAppearance {
   NSString *_currentColorScheme;
+// [macOS
+	NSData *_currentAccentColor;
+// macOS]
 }
 
 - (instancetype)init
@@ -101,6 +104,10 @@ NSString *RCTColorSchemePreference(NSAppearance *appearance)
 #else // [macOS
 	NSAppearance *appearance = RCTSharedApplication().appearance;
 	_currentColorScheme = RCTColorSchemePreference(appearance);
+	[[NSDistributedNotificationCenter defaultCenter] addObserver:self
+	                                         selector:@selector(accentColorChanged:)
+												 name:@"AppleColorPreferencesChangedNotification"
+											   object:nil];
 #endif // macOS]
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(appearanceChanged:)
@@ -162,17 +169,35 @@ RCT_EXPORT_SYNCHRONOUS_TYPED_METHOD(NSString *, getColorScheme)
     traitCollection = userInfo[RCTUserInterfaceStyleDidChangeNotificationTraitCollectionKey];
   }
   NSString *newColorScheme = RCTColorSchemePreference(traitCollection);
+	
 #else // [macOS
   NSAppearance *appearance = nil;
   if (userInfo) {
     appearance = userInfo[RCTUserInterfaceStyleDidChangeNotificationAppearanceKey];
   }
   NSString *newColorScheme = RCTColorSchemePreference(appearance);
+
 #endif // macOS]
-  if (![_currentColorScheme isEqualToString:newColorScheme]) {
-    _currentColorScheme = newColorScheme;
-    [self sendEventWithName:@"appearanceChanged" body:@{@"colorScheme" : newColorScheme}];
+  bool colorSchemeChanged = ![_currentColorScheme isEqualToString:newColorScheme];
+  _currentColorScheme = newColorScheme;
+  if (colorSchemeChanged) {
+    [self emitAppearanceChangedEvent];
   }
+}
+
+- (void)accentColorChanged:(NSNotification *)notification
+{
+	_currentAccentColor = [[NSUserDefaults standardUserDefaults] objectForKey:@"AppleAccentColor"];
+	[self emitAppearanceChangedEvent];
+}
+
+- (void)emitAppearanceChangedEvent
+{
+	if (_currentAccentColor) {
+		[self sendEventWithName:@"appearanceChanged" body:@{@"colorScheme" : _currentColorScheme, @"accentColor" : _currentAccentColor}];
+	} else {
+		[self sendEventWithName:@"appearanceChanged" body:@{@"colorScheme" : _currentColorScheme}];
+	}
 }
 
 #pragma mark - RCTEventEmitter

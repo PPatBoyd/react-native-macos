@@ -10,7 +10,14 @@
 
 import * as React from 'react';
 import {useState, useEffect} from 'react';
-import {Appearance, Text, useColorScheme, View, Button} from 'react-native';
+import {
+  Appearance,
+  PlatformColor,
+  Text,
+  useColorScheme,
+  View,
+  Button,
+} from 'react-native';
 import type {
   AppearancePreferences,
   ColorSchemeName,
@@ -21,24 +28,46 @@ function ColorSchemeSubscription() {
   const [colorScheme, setScheme] = useState<?ColorSchemeName | string>(
     Appearance.getColorScheme(),
   );
+  const [accentColor, setAccentColor] = useState<number | undefined>(undefined);
+  const [appearanceChangeCount, setAppearanceChangeCount] = useState<number>(0);
 
   useEffect(() => {
     const subscription = Appearance.addChangeListener(
       (preferences: AppearancePreferences) => {
-        const {colorScheme: scheme} = preferences;
-        setScheme(scheme);
+        console.log(
+          'color: ' +
+            preferences.colorScheme +
+            ' accent: ' +
+            preferences.accentColor,
+        );
+        const {colorScheme: newColorScheme, accentColor: newAccentColor} =
+          preferences;
+        setScheme(newColorScheme);
+        setAccentColor(newAccentColor);
+        setAppearanceChangeCount(appearanceChangeCount + 1);
       },
     );
 
     return () => subscription?.remove();
-  }, [setScheme]);
+  }, [setScheme, appearanceChangeCount, setAppearanceChangeCount]);
 
+  const countStyle = {
+    color: accentColor === undefined ? 'green' : PlatformColor('controlAccentColor'),
+  };
   return (
     <RNTesterThemeContext.Consumer>
       {theme => {
         return (
           <ThemedContainer>
             <ThemedText>{colorScheme}</ThemedText>
+            <ThemedText>
+              <Text style={countStyle}>{'Event Count: '}</Text>
+              {appearanceChangeCount}
+              <Text style={countStyle}>{' accentColor: '}</Text>
+              {accentColor !== undefined
+                ? accentColor
+                : '(controlAccentColor set to Multi-Color)'}
+            </ThemedText>
           </ThemedContainer>
         );
       }}

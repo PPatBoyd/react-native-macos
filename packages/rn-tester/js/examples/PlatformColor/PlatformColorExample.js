@@ -385,6 +385,66 @@ function VariantColorsExample() {
 function ColorWithSystemEffectMacOSExample() {
   function createTable() {
     let colors = [
+		{
+		  label: "PlatformColor('systemRedColor')",
+		  color: PlatformColor('systemRedColor'),
+		},
+		{
+		  label: "PlatformColor('controlColor')",
+		  color: PlatformColor('controlColor'),
+		},
+		{
+		  label: "PlatformColor('controlColor', 'systemRedColor')",
+		  color: PlatformColor('controlColor', 'systemRedColor'),
+		},
+		{
+		  label: "PlatformColor('controlTextColor, systemRedColor')",
+		  color: PlatformColor('controlTextColor', 'systemRedColor'),
+		},
+		{
+		  label: "PlatformColor('controlAccentColor', 'systemRedColor')",
+		  color: PlatformColor('controlAccentColor', 'systemRedColor'),
+		},
+      {
+        label: "PlatformColor('controlAccentColor')",
+        color: PlatformColor('controlAccentColor'),
+      },
+      {
+        label: "PlatformColor('systemRedColor2')",
+        color: PlatformColor('systemRedColor'),
+      },
+      {
+        label:
+          "ColorWithSystemEffectMacOS(PlatformColor('controlAccentColor'), 'none')",
+        color: ColorWithSystemEffectMacOS(
+          PlatformColor('controlAccentColor'),
+          'none',
+        ),
+      },
+      {
+        label:
+          "ColorWithSystemEffectMacOS(PlatformColor('controlAccentColor'), 'pressed')",
+        color: ColorWithSystemEffectMacOS(
+          PlatformColor('controlAccentColor'),
+          'pressed',
+        ),
+      },
+      {
+        label:
+          "ColorWithSystemEffectMacOS(PlatformColor('controlAccentColor'), 'disabled')",
+        color: ColorWithSystemEffectMacOS(
+          PlatformColor('controlAccentColor'),
+          'disabled',
+        ),
+      },
+      {
+        label:
+          "ColorWithSystemEffectMacOS(PlatformColor('controlAccentColor'), 'rollover')",
+        color: ColorWithSystemEffectMacOS(
+          PlatformColor('controlAccentColor'),
+          'rollover',
+        ),
+      },
       {label: 'gray', color: 'gray'},
       {
         label: "ColorWithSystemEffectMacOS('gray', 'none')",

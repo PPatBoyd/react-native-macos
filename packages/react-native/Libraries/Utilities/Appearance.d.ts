@@ -14,6 +14,7 @@ type ColorSchemeName = 'light' | 'dark' | null | undefined;
 export namespace Appearance {
   type AppearancePreferences = {
     colorScheme: ColorSchemeName;
+    accentColor: number | undefined;
   };
 
   type AppearanceListener = (preferences: AppearancePreferences) => void;
